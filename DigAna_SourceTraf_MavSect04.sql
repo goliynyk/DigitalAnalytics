@@ -1,9 +1,9 @@
--- DIGITAL ANALYTICS: TRAFFIC SOURCE ANALYSIS (sql reiew Count and Case statements)
+-- DIGITAL ANALYTICS: TRAFFIC SOURCE ANALYSIS (sql review Count and Case statements)
 
 -- BASED ON: MAVEN ADVANCED SQL: MY SQL COURSE ON UDEMY - great course, highly recommend
 -- https://www.udemy.com/course/advanced-sql-mysql-for-analytics-business-intelligence/
 
--- SECTION 5, LESSONS 32 - 49
+-- SECTION 4, LESSONS 19 - 31
 -- Traffic Source Analysis (part 1) 5 assignments -Email, Social, Search, Direct (Mktg Director type questions)
 -- -- a.	Overall point: Where is most traffic coming from, how source performs in terms of volumes and conversion rates 
 -- -- -- -- and adjusting bids to optimize marketing budgets (answer – gmail, non br)
