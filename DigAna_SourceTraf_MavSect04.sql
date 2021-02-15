@@ -1,4 +1,4 @@
--- DIGITAL ANLAYTICS: TRAFFIC SOURCE ANALYSIS
+-- DIGITAL ANALYTICS: TRAFFIC SOURCE ANALYSIS (sql reiew Count and Case statements)
 
 -- BASED ON: MAVEN ADVANCED SQL: MY SQL COURSE ON UDEMY - great course, highly recommend
 -- https://www.udemy.com/course/advanced-sql-mysql-for-analytics-business-intelligence/
