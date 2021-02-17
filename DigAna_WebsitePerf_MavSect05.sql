@@ -81,47 +81,14 @@ WHERE created_at < '2012-06-09'
 GROUP BY pageview_url
 ORDER BY pvs DESC
 ;
--- Answer  look at hom, products, mr fuzzy
+-- Answer  look at home, products, mr fuzzy
 -- -- next steps - are these list represenetative of top entry page, look at performance of each page
 
 -- Sect 5 assignment 36,37 2nd of 7: Top entry pages; Morgan: website manager on 6/12/2012:  top entry pages pages
 
-
--- -- 2021 02 04************
-
--- Step1
--- CREATE TEMPORARY TABLE tbl_entry_pvs_id
-SELECT 
-	website_session_id,
-    MIN(website_pageview_id) AS entry_pv_id
-FROM website_pageviews
-WHERE created_at < '2012-06-12'
-GROUP BY 1
-ORDER BY 2 DESC
-;
-
--- step 2 pull in url corresponding to lowest pageview id
-SELECT
-	pageview_url AS landing_page_url,
-    -- website_pageviews.website_session_id AS sessions
-    COUNT(website_pageviews.website_session_id) AS sessions
-
-FROM tbl_entry_pvs_id
-		LEFT JOIN website_pageviews
-			ON entry_pv_id = website_pageview_id
-GROUP BY 1
-ORDER BY 2 DESC
-;
-
-
--- ************
-
-
-
-
 -- step 1: isolate entry pages per session
-DROP TEMPORARY TABLE entry_pages;
-CREATE TEMPORARY TABLE entry_pages
+-- DROP TEMPORARY TABLE entry_pages;
+-- CREATE TEMPORARY TABLE entry_pages
 SELECT
 	website_session_id,
     MIN(website_pageview_id) entry_page_id
@@ -145,6 +112,7 @@ ORDER BY entry_count DESC
 -- ANSWER all landing on homepage, is it best initial experience for customers
 -- -- next steps: what metric to measure performance; is that as good as we want
 
+-- SECT 5 ASSIGNMENT 38
 -- CONCEPT: Bounce rates (session level concept): 
 -- -- performance of key landing pages and then test to improve results
 -- -- what was landing page, how many sessions, how many bounced and what is the bounce rate
@@ -163,9 +131,9 @@ ORDER BY entry_count DESC
 -- -- group by landing page url, count websession ids for two columns, add a 4th calc column for bounce rate
 
 
-DROP TEMPORARY TABLE first_pv_demo;
 -- step 1
-CREATE TEMPORARY TABLE first_pv_demo
+-- DROP TEMPORARY TABLE first_pv_demo;
+-- CREATE TEMPORARY TABLE first_pv_demo
 SELECT
 	website_session_id,
     MIN(website_pageview_id) AS Min_Pageview_Id
@@ -177,7 +145,7 @@ SELECT *
 FROM first_pv_demo;
 
 -- step 2 - pull in landing page url for each website session
-CREATE TEMPORARY TABLE sessions_w_landing_page
+-- CREATE TEMPORARY TABLE sessions_w_landing_page
 SELECT
 	first_pv_demo.website_session_id,
     website_pageviews.pageview_url AS landing_page
@@ -187,11 +155,10 @@ FROM first_pv_demo
 		ON website_pageviews.website_pageview_id = first_pv_demo.Min_Pageview_Id
 ;
 -- 14,826 sessions with landing page identified
-SELECT * FROM sessions_w_landing_page;
 
 -- bring in and count all pageviews for that session, then just limit to bounced sessions
 
-CREATE TEMPORARY TABLE bounced_sessions_only
+-- CREATE TEMPORARY TABLE bounced_sessions_only
 SELECT
 	sessions_w_landing_page.website_session_id,
     sessions_w_landing_page.landing_page,
@@ -204,8 +171,6 @@ GROUP BY
     sessions_w_landing_page.landing_page
 HAVING count_of_pages_viewed = 1;
 -- subset of 7,036 website sessions with bound ids versus 14,826 total sessions
-
-SELECT * FROM bounced_sessions_only;
 
 
 -- step 3 now add those bounced session back into table as a new column
@@ -221,7 +186,7 @@ FROM sessions_w_landing_page
 GROUP BY
 	sessions_w_landing_page.landing_page;
 
--- Sect 5 assignment 39, 40 Bounce Rates 3rd of 7: calc bounce rates Morgan: website manager on 6/14/2012:  bounce rate for home page
+-- SECT 5 ASSIGNMENT 39, 40 Bounce Rates 3rd of 7: calc bounce rates Morgan: website manager on 6/14/2012:  bounce rate for home page
 -- build table with folowing fields, then group and count
 -- -- website session id
 -- -- landing page url
@@ -230,7 +195,7 @@ GROUP BY
 -- -- group by landing page url, count websession ids for two columns, add a 4th calc column for bounce rate
 
 -- step 1: isolate entry pages per session
-CREATE TEMPORARY TABLE tbl_UrlEntryID
+-- CREATE TEMPORARY TABLE tbl_UrlEntryID
 SELECT
 	website_session_id,
     MIN(website_pageview_id) entry_page_id
@@ -240,7 +205,7 @@ GROUP BY website_session_id
 ;
 
 -- step 2: add url to final table, purpose of join is to drop in url to fianl table
-CREATE TEMPORARY TABLE tbl_Final
+-- CREATE TEMPORARY TABLE tbl_Final
 SELECT
 	tbl_UrlEntryID.website_session_id,
     website_pageviews.pageview_url
@@ -250,7 +215,7 @@ FROM tbl_UrlEntryID
 
 -- step 3: create temp table of sessions ids with total views, isolate bounced sessions
 -- --  and use join to limit (note purpose of join appears to be to limit table size so could have used date)
-CREATE TEMPORARY TABLE tbl_SessionIdsBounced
+-- CREATE TEMPORARY TABLE tbl_SessionIdsBounced
 SELECT
 	tbl_Final.website_session_id,
     COUNT(website_pageviews.website_pageview_id) AS sessions_total
@@ -274,7 +239,7 @@ GROUP BY tbl_Final.pageview_url
 ;
 -- ANSWER of home page bounce rate is close to 60%; next steps is to set up a new custom landing page then A/B testing
 
--- Sect 5 assignment 41, 42 Bounce Rates a/b		4th of 7: Landing page A/B tests
+-- SECT 5 ASSIGNMENT 41, 42 Bounce Rates a/b		4th of 7: Landing page A/B tests
 -- -- Morgan: website manager on 7/28/2012: it is 6 weeks later, new land page built, A/B test comparison
 
 -- STEP 0: find when / lander launched
@@ -289,13 +254,14 @@ SELECT
     MIN(website_pageview_id)
 FROM website_pageviews
 WHERE pageview_url = '/lander-1'
-	AND created_at IS NOT NULL;
--- ANSWER url id is 23504
+	AND created_at IS NOT NULL
+;
+-- ANSWER url id is 23504 on  6/19/2012
 
--- STEP 1: find first pageview id for each sessions (limit to relevant time period and utm sourch and utm campaing
--- -- table join is only to limit in where clause
-DROP TEMPORARY TABLE first_test_pageviews;
-CREATE TEMPORARY TABLE first_test_pageviews
+-- STEP 1: find first pageview id for each sessions (limit to relevant time period and utm sourch and utm campaign
+-- -- table join is only for limit in where clause
+-- DROP TEMPORARY TABLE first_test_pageviews;
+-- CREATE TEMPORARY TABLE first_test_pageviews
 SELECT
 	website_pageviews.website_session_id,
     MIN(website_pageviews.website_pageview_id) AS min_pageview_id
@@ -308,10 +274,9 @@ WHERE utm_source = 'gsearch' AND utm_campaign = 'nonbrand'
 GROUP BY website_pageviews.website_session_id;
 -- Answer = 4,753 rows
 
-
 -- STEP 2: identify landing page for each session
 -- -- table join back to pageview table is to pull in landing page
-CREATE TEMPORARY TABLE nonbrand_test_session_w_landing_page
+-- CREATE TEMPORARY TABLE nonbrand_test_session_w_landing_page
 SELECT
 	first_test_pageviews.website_session_id,
     website_pageviews.pageview_url AS landing_page
@@ -323,7 +288,7 @@ WHERE pageview_url IN ('/home', '/lander-1');
 -- Answer = 4,753 rows again
 
 -- STEP 3: count pageviews for each session
-CREATE TEMPORARY TABLE nonbrand_test_bounced_sessions
+-- CREATE TEMPORARY TABLE nonbrand_test_bounced_sessions
 SELECT
 	a.website_session_id,
     a.landing_page,
@@ -358,7 +323,7 @@ FROM nonbrand_test_session_w_landing_page a
 GROUP BY a.landing_page;
 -- ANSWER: new landing page is performing better so all traffic will be directed there moving forward
 
--- Sect 5 assignment 43, 44 Bounce Rates trends		5th of 7: Landing page trends					2012 08 31+
+-- SECT 5 ASSIGNMENT 43, 44 Bounce Rates trends		5th of 7: Landing page trends					2012 08 31+
 -- -- Morgan: website manager: confirm all re-routed overall traffic going to new landing page and confirm that bounce rates are favorable
 
 -- STEP 1: find first pageview id for each sessions (limit to relevant time period)
@@ -366,13 +331,13 @@ GROUP BY a.landing_page;
 -- STEP 3: count pageviews for each session
 -- STEP 4: summarize total sessions and bounced session, to lander
 
--- NEW combine STEPS 1, 2, and 3!!!
+-- NEW combine STEPS 1, 2, and 3!!! cleaner coding
 -- STEP 1: find first pageview id for each sessions (limit to relevant time period)
 -- STEP 2: identify landing page for each session  (skipped this and pull in later)
 -- STEP 3: count pageviews for each session
 
-DROP TEMPORARY TABLE sessions_w_min_pv_and_view_count;
-CREATE TEMPORARY TABLE sessions_w_min_pv_and_view_count
+-- DROP TEMPORARY TABLE sessions_w_min_pv_and_view_count;
+-- CREATE TEMPORARY TABLE sessions_w_min_pv_and_view_count
 SELECT
 	website_sessions.website_session_id,
     MIN(website_pageview_id) AS first_pageview_id,
@@ -383,15 +348,12 @@ FROM website_sessions
 WHERE
 	website_sessions.created_at > '2012-06-01' AND website_sessions.created_at < '2012-08-31'
 	AND utm_source = 'gsearch' AND utm_campaign = 'nonbrand'
-
 GROUP BY website_sessions.website_session_id;
 -- Answer = 11,623 rows
 
-SELECT * FROM sessions_w_min_pv_and_view_count;
-
 -- STEPS new
-DROP TEMPORARY TABLE sessions_w_counts_lander_and_created_at;
-CREATE TEMPORARY TABLE sessions_w_counts_lander_and_created_at
+-- DROP TEMPORARY TABLE sessions_w_counts_lander_and_created_at;
+-- CREATE TEMPORARY TABLE sessions_w_counts_lander_and_created_at
 SELECT
 	sessions_w_min_pv_and_view_count.website_session_id,
     sessions_w_min_pv_and_view_count.first_pageview_id,
@@ -429,4 +391,5 @@ FROM sessions_w_counts_lander_and_created_at
 
 GROUP BY year_week;
 
+-- ANSWER: In June, bounce rate around 60%; in Aug, bounce rate is 53% as all traffic is re-routed to new lander page
 
