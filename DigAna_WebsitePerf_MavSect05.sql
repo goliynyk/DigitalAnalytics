@@ -1,3 +1,4 @@
+-- New
 -- DIGITAL ANALYTICS: WEBSITE PERFORMANCE ANALYSIS (sql review: multi step queries, temp tbls, subqueries)
 
 -- BASED ON: MAVEN ADVANCED SQL: MY SQL COURSE ON UDEMY - great course, highly recommend
